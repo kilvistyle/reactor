@@ -2,7 +2,7 @@ package com.example.reactor.service;
 
 import com.example.reactor.entity.Category;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * @author S.Chiba
  * @since 2019/06/24
  */
-@Component
+@Service
 public class CategoryService {
 
     private static final String BACKENDS_BASE_URL = "http://localhost:8081";
@@ -40,7 +40,7 @@ public class CategoryService {
 
     public Mono<Category> read(String categoryId) {
         return webClient.get()
-                .uri(String.format("/categories/%s", categoryId))
+                .uri("/categories/{categoryId}", categoryId)
                 .retrieve()
                 .bodyToMono(categoryParameterizedTypeReference);
     }
