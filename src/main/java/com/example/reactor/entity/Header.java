@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 public class Header implements Serializable {
 
-    private Long articleId;
+    private Long entryId;
     private String subject;
     private String userId;
     private String categoryId;

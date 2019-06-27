@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 public class Comment implements Serializable {
 
-    private Long articleId;
+    private Long entryId;
     private Long number;
     private String body;
     private String userId;

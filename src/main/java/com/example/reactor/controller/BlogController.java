@@ -1,7 +1,7 @@
 package com.example.reactor.controller;
 
 import com.example.reactor.entity.*;
-import com.example.reactor.resource.Article;
+import com.example.reactor.resource.Entry;
 import com.example.reactor.resource.HeadersWithCategory;
 import com.example.reactor.resource.HeadersByUser;
 import com.example.reactor.service.*;
@@ -102,37 +102,37 @@ public class BlogController {
 //                .log("headers/findByCategory");
     }
 
-    @GetMapping("/articles/{articleId}")
-    public Mono<Article> getArticle(@NotNull @PathVariable Long articleId) {
-        return headerService.read(articleId)
+    @GetMapping("/entries/{entryId}")
+    public Mono<Entry> getEntry(@NotNull @PathVariable Long entryId) {
+        return headerService.read(entryId)
                 .flatMap(header -> Mono.zip(
-                            bodyService.read(header.getArticleId()),              // T1
-                            commentService.findByArticleId(header.getArticleId()) // T2
+                            bodyService.read(header.getEntryId()),              // T1
+                            commentService.findByEntryId(header.getEntryId()) // T2
                         )
                         .map(tuple2 -> {
                             final Body body = tuple2.getT1();
                             final List<Comment> comments = tuple2.getT2();
-                            return Article.builder()
+                            return Entry.builder()
                                     .header(header)
                                     .body(body)
                                     .comments(comments)
                                     .build();
                         })
                 )
-                .log(String.format("articles/%d", articleId));
+                .log(String.format("entries/%d", entryId));
 
-//        return headerService.read(articleId)
+//        return headerService.read(entryId)
 //                .flatMap(header -> Mono.zip(
 //                        Mono.just(header),
-//                        bodyService.read(header.getArticleId()),
-//                        commentService.findByArticleId(header.getArticleId())
+//                        bodyService.read(header.getEntryId()),
+//                        commentService.findByEntryId(header.getEntryId())
 //                        )
 //                )
 //                .map(tuple3 -> {
 //                    final Header header = tuple3.getT1();
 //                    final Body body = tuple3.getT2();
 //                    final List<Comment> comments = tuple3.getT3();
-//                    return Article.builder()
+//                    return Entry.builder()
 //                            .header(header)
 //                            .body(body)
 //                            .comments(comments)

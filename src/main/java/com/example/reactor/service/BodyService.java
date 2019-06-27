@@ -28,9 +28,9 @@ public class BodyService {
     private final ParameterizedTypeReference<Body> bodyParameterizedTypeReference =
             new ParameterizedTypeReference<Body>() {};
 
-    public Mono<Body> read(@NotNull Long articleId) {
+    public Mono<Body> read(@NotNull Long entryId) {
         return webClient.get()
-                .uri("/bodies/{articleId}", articleId)
+                .uri("/bodies/{entryId}", entryId)
                 .retrieve()
                 .bodyToMono(bodyParameterizedTypeReference);
     }

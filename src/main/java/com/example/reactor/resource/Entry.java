@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * <p>Article</p>
+ * <p>Entry</p>
  * <p>TODO クラスコメント</p>
  * <p>
  * ・新規作成 2019/06/26 S.Chiba.<br>
@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Data
 @Builder
-public class Article {
+public class Entry {
 
     public Header header;
     public Body body;

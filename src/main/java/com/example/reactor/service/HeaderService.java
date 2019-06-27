@@ -40,9 +40,9 @@ public class HeaderService {
                 .bodyToMono(headerParameterizedTypeReference);
     }
 
-    public Mono<Header> read(Long articleId) {
+    public Mono<Header> read(Long entryId) {
         return webClient.get()
-                .uri("/headers/{articleId}", articleId)
+                .uri("/headers/{entryId}", entryId)
                 .retrieve()
                 .bodyToMono(headerParameterizedTypeReference);
     }
@@ -55,9 +55,9 @@ public class HeaderService {
                 .bodyToMono(headerParameterizedTypeReference);
     }
 
-    public Mono<Integer> delete(Long articleId, Long version) {
+    public Mono<Integer> delete(Long entryId, Long version) {
         return webClient.delete()
-                .uri("/headers/{articleId}?version={version}",articleId, version)
+                .uri("/headers/{entryId}?version={version}",entryId, version)
                 .retrieve()
                 .bodyToMono(Integer.class);
     }

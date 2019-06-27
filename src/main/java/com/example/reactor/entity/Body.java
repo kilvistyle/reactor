@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 public class Body implements Serializable {
 
-    private Long articleId;
+    private Long entryId;
     private String body;
 
 }

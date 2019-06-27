@@ -29,9 +29,9 @@ public class CommentService {
     private final ParameterizedTypeReference<List<Comment>> commentsParameterizedTypeReference =
             new ParameterizedTypeReference<List<Comment>>() {};
 
-    public Mono<List<Comment>> findByArticleId(@NotNull Long articleId) {
+    public Mono<List<Comment>> findByEntryId(@NotNull Long entryId) {
         return webClient.get()
-                .uri("/comments/{articleId}", articleId)
+                .uri("/comments/{entryId}", entryId)
                 .retrieve()
                 .bodyToMono(commentsParameterizedTypeReference);
     }
