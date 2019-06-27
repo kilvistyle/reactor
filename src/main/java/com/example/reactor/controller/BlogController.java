@@ -1,11 +1,13 @@
 package com.example.reactor.controller;
 
 import com.example.reactor.entity.*;
+import com.example.reactor.exception.AppException;
 import com.example.reactor.resource.Entry;
 import com.example.reactor.resource.HeadersWithCategory;
 import com.example.reactor.resource.HeadersByUser;
 import com.example.reactor.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -47,33 +49,33 @@ public class BlogController {
         return categoryService.findAll().log("categories");
     }
 
-    @GetMapping("/headers/findByUser/{userId}")
+    @GetMapping("/headers/find-by-user/{userId}")
     public Mono<HeadersByUser> findHeadersByUserId(@NotNull @PathVariable final String userId) {
-        return userService.read(userId)
-                .flatMap(user -> headerService.findByUserId(user.getUserId())
-                        .map(headers -> HeadersByUser.builder()
-                                .user(user)
-                                .headers(headers)
-                                .build()))
-                .log("headers/findByUser");
-
 //        return userService.read(userId)
-//                .flatMap(user -> {
-//                    if (User.UserState.VALID.equals(user.getUserState())) {
-//                        return headerService.findByUserId(user.getUserId())
-//                                .map(headers -> HeadersByUser.builder()
-//                                        .user(user)
-//                                        .headers(headers)
-//                                        .build());
-//                    }
-//                    else {
-//                        throw new AppException("userId is invalid.", HttpStatus.BAD_REQUEST);
-//                    }
-//                })
-//                .log("headers/findByUser");
+//                .flatMap(user -> headerService.findByUserId(user.getUserId())
+//                        .map(headers -> HeadersByUser.builder()
+//                                .user(user)
+//                                .headers(headers)
+//                                .build()))
+//                .log("headers/find-by-user");
+
+        return userService.read(userId)
+                .flatMap(user -> {
+                    if (User.UserState.VALID.equals(user.getUserState())) {
+                        return headerService.findByUserId(user.getUserId())
+                                .map(headers -> HeadersByUser.builder()
+                                        .user(user)
+                                        .headers(headers)
+                                        .build());
+                    }
+                    else {
+                        throw new AppException("userId is invalid.", HttpStatus.BAD_REQUEST);
+                    }
+                })
+                .log("headers/find-by-user");
     }
 
-    @GetMapping("/headers/findByCategory/{categoryId}")
+    @GetMapping("/headers/find-by-category/{categoryId}")
     public Mono<HeadersWithCategory> findHeadersByCategoryId(@NotNull @PathVariable final String categoryId) {
         return Mono.zip(
                     categoryService.read(categoryId),          // T1
@@ -87,7 +89,7 @@ public class BlogController {
                             .headers(headers)
                             .build();
                 })
-                .log("headers/findByCategory");
+                .log("headers/find-by-category");
 
 //        return categoryService.read(categoryId)
 //                .zipWith(headerService.findByCategoryId(categoryId))
@@ -99,7 +101,7 @@ public class BlogController {
 //                            .headers(headers)
 //                            .build();
 //                })
-//                .log("headers/findByCategory");
+//                .log("headers/find-by-category");
     }
 
     @GetMapping("/entries/{entryId}")

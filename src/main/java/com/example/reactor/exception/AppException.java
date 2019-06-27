@@ -1,7 +1,7 @@
 package com.example.reactor.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.constraints.NotNull;
 
@@ -15,10 +15,14 @@ import javax.validation.constraints.NotNull;
  * @author S.Chiba
  * @since 2019/06/26
  */
-public class AppException extends WebClientResponseException {
+public class AppException extends ResponseStatusException {
 
     public AppException(@NotNull String message, @NotNull HttpStatus status) {
-        super(message, status.value(), status.getReasonPhrase(), null, message.getBytes(), null);
+        super(status, message);
+    }
+
+    public AppException(@NotNull String message, @NotNull HttpStatus status, @NotNull Exception exception) {
+        super(status, message, exception);
     }
 
 }
