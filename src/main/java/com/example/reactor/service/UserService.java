@@ -2,7 +2,6 @@ package com.example.reactor.service;
 
 
 import com.example.reactor.entity.User;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -24,14 +23,11 @@ public class UserService {
 
     private final WebClient webClient = WebClient.create(BACKENDS_BASE_URL);
 
-    private final ParameterizedTypeReference<User> userParameterizedTypeReference =
-            new ParameterizedTypeReference<User>() {};
-
     public Mono<User> read(String userId) {
         return webClient.get()
                 .uri("/users/{userId}", userId)
                 .retrieve()
-                .bodyToMono(userParameterizedTypeReference);
+                .bodyToMono(User.class);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.reactor.service;
 
 import com.example.reactor.entity.Category;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -25,23 +24,18 @@ public class CategoryService {
 
     private final WebClient webClient = WebClient.create(BACKENDS_BASE_URL);
 
-    private final ParameterizedTypeReference<List<Category>> categoriesParameterizedTypeReference =
-            new ParameterizedTypeReference<List<Category>>() {};
-
-    private static final ParameterizedTypeReference<Category> categoryParameterizedTypeReference =
-            new ParameterizedTypeReference<Category>() {};
-
     public Mono<List<Category>> findAll() {
         return webClient.get()
                 .uri("/categories")
                 .retrieve()
-                .bodyToMono(categoriesParameterizedTypeReference);
+                .bodyToFlux(Category.class)
+                .collectList();
     }
 
     public Mono<Category> read(String categoryId) {
         return webClient.get()
                 .uri("/categories/{categoryId}", categoryId)
                 .retrieve()
-                .bodyToMono(categoryParameterizedTypeReference);
+                .bodyToMono(Category.class);
     }
 }

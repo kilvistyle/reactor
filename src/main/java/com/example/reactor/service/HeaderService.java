@@ -1,7 +1,6 @@
 package com.example.reactor.service;
 
 import com.example.reactor.entity.Header;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,25 +25,19 @@ public class HeaderService {
 
     private final WebClient webClient = WebClient.create(BACKENDS_BASE_URL);
 
-    private final ParameterizedTypeReference<Header> headerParameterizedTypeReference =
-            new ParameterizedTypeReference<Header>() {};
-
-    private final ParameterizedTypeReference<List<Header>> headersParameterizedTypeReference =
-            new ParameterizedTypeReference<List<Header>>() {};
-
     public Mono<Header> create(Header header) {
         return webClient.post()
                 .uri("/headers")
                 .body(BodyInserters.fromObject(header))
                 .retrieve()
-                .bodyToMono(headerParameterizedTypeReference);
+                .bodyToMono(Header.class);
     }
 
     public Mono<Header> read(Long entryId) {
         return webClient.get()
                 .uri("/headers/{entryId}", entryId)
                 .retrieve()
-                .bodyToMono(headerParameterizedTypeReference);
+                .bodyToMono(Header.class);
     }
 
     public Mono<Header> update(Header header) {
@@ -52,7 +45,7 @@ public class HeaderService {
                 .uri("/headers")
                 .body(BodyInserters.fromObject(header))
                 .retrieve()
-                .bodyToMono(headerParameterizedTypeReference);
+                .bodyToMono(Header.class);
     }
 
     public Mono<Integer> delete(Long entryId, Long version) {
@@ -66,20 +59,23 @@ public class HeaderService {
         return webClient.get()
                 .uri("/headers/find?recently=10")
                 .retrieve()
-                .bodyToMono(headersParameterizedTypeReference);
+                .bodyToFlux(Header.class)
+                .collectList();
     }
 
     public Mono<List<Header>> findByCategoryId(String categoryId) {
         return webClient.get()
                 .uri(String.format("/headers/find?categoryId=%s", categoryId))
                 .retrieve()
-                .bodyToMono(headersParameterizedTypeReference);
+                .bodyToFlux(Header.class)
+                .collectList();
     }
 
     public Mono<List<Header>> findByUserId(String userId) {
         return webClient.get()
                 .uri(String.format("/headers/find?userId=%s", userId))
                 .retrieve()
-                .bodyToMono(headersParameterizedTypeReference);
+                .bodyToFlux(Header.class)
+                .collectList();
     }
 }

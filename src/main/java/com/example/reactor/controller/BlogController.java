@@ -51,28 +51,27 @@ public class BlogController {
 
     @GetMapping("/headers/find-by-user/{userId}")
     public Mono<HeadersByUser> findHeadersByUserId(@NotNull @PathVariable final String userId) {
-//        return userService.read(userId)
-//                .flatMap(user -> headerService.findByUserId(user.getUserId())
-//                        .map(headers -> HeadersByUser.builder()
-//                                .user(user)
-//                                .headers(headers)
-//                                .build()))
-//                .log("headers/find-by-user");
-
         return userService.read(userId)
-                .flatMap(user -> {
-                    if (User.UserState.VALID.equals(user.getUserState())) {
-                        return headerService.findByUserId(user.getUserId())
-                                .map(headers -> HeadersByUser.builder()
-                                        .user(user)
-                                        .headers(headers)
-                                        .build());
-                    }
-                    else {
-                        throw new AppException("userId is invalid.", HttpStatus.BAD_REQUEST);
-                    }
-                })
-                .log("headers/find-by-user");
+                .flatMap(user -> headerService.findByUserId(user.getUserId())
+                        .map(headers -> HeadersByUser.builder()
+                                .user(user)
+                                .headers(headers)
+                                .build()));
+//
+//        return userService.read(userId)
+//                .flatMap(user -> {
+//                    if (User.UserState.VALID.equals(user.getUserState())) {
+//                        return headerService.findByUserId(user.getUserId())
+//                                .map(headers -> HeadersByUser.builder()
+//                                        .user(user)
+//                                        .headers(headers)
+//                                        .build());
+//                    }
+//                    else {
+//                        throw new AppException("userId is invalid.", HttpStatus.BAD_REQUEST);
+//                    }
+//                })
+//                .log("headers/find-by-user");
     }
 
     @GetMapping("/headers/find-by-category/{categoryId}")
@@ -88,20 +87,7 @@ public class BlogController {
                             .category(category)
                             .headers(headers)
                             .build();
-                })
-                .log("headers/find-by-category");
-
-//        return categoryService.read(categoryId)
-//                .zipWith(headerService.findByCategoryId(categoryId))
-//                .map(tuple2 -> {
-//                    final Category category = tuple2.getT1();
-//                    final List<Header> headers = tuple2.getT2();
-//                    return HeadersWithCategory.builder()
-//                            .category(category)
-//                            .headers(headers)
-//                            .build();
-//                })
-//                .log("headers/find-by-category");
+                });
     }
 
     @GetMapping("/entries/{entryId}")

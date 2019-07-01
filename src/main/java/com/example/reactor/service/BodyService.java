@@ -1,7 +1,6 @@
 package com.example.reactor.service;
 
 import com.example.reactor.entity.Body;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -25,14 +24,11 @@ public class BodyService {
 
     private final WebClient webClient = WebClient.create(BACKENDS_BASE_URL);
 
-    private final ParameterizedTypeReference<Body> bodyParameterizedTypeReference =
-            new ParameterizedTypeReference<Body>() {};
-
     public Mono<Body> read(@NotNull Long entryId) {
         return webClient.get()
                 .uri("/bodies/{entryId}", entryId)
                 .retrieve()
-                .bodyToMono(bodyParameterizedTypeReference);
+                .bodyToMono(Body.class);
     }
 
 }
