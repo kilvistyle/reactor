@@ -58,7 +58,8 @@ public class BlogController {
                         .map(headers -> HeadersByUser.builder()
                                 .user(user)
                                 .headers(headers)
-                                .build()));
+                                .build()))
+                .log("headers/find-by-user");
 //
 //        return userService.read(userId)
 //                .flatMap(user -> {
@@ -89,7 +90,8 @@ public class BlogController {
                             .category(category)
                             .headers(headers)
                             .build();
-                });
+                })
+                .log("headers/find-by-category");
     }
 
     @GetMapping("/entries/{entryId}")
