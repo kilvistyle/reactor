@@ -9,6 +9,7 @@ import com.example.reactor.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
@@ -45,7 +46,7 @@ public class BlogController {
 
 
     @GetMapping("/categories")
-    public Mono<List<Category>> findCategories() {
+    public Flux<Category> findCategories() {
         return categoryService.findAll().log("categories");
     }
 
@@ -53,6 +54,7 @@ public class BlogController {
     public Mono<HeadersByUser> findHeadersByUserId(@NotNull @PathVariable final String userId) {
         return userService.read(userId)
                 .flatMap(user -> headerService.findByUserId(user.getUserId())
+                        .collectList()
                         .map(headers -> HeadersByUser.builder()
                                 .user(user)
                                 .headers(headers)
@@ -77,8 +79,8 @@ public class BlogController {
     @GetMapping("/headers/find-by-category/{categoryId}")
     public Mono<HeadersWithCategory> findHeadersByCategoryId(@NotNull @PathVariable final String categoryId) {
         return Mono.zip(
-                    categoryService.read(categoryId),          // T1
-                    headerService.findByCategoryId(categoryId) // T2
+                    categoryService.read(categoryId), // T1
+                    headerService.findByCategoryId(categoryId).collectList() // T2
                 )
                 .map(tuple2 -> {
                     final Category category = tuple2.getT1();
@@ -94,8 +96,8 @@ public class BlogController {
     public Mono<Entry> getEntry(@NotNull @PathVariable Long entryId) {
         return headerService.read(entryId)
                 .flatMap(header -> Mono.zip(
-                            bodyService.read(header.getEntryId()),              // T1
-                            commentService.findByEntryId(header.getEntryId()) // T2
+                            bodyService.read(header.getEntryId()), // T1
+                            commentService.findByEntryId(header.getEntryId()).collectList() // T2
                         )
                         .map(tuple2 -> {
                             final Body body = tuple2.getT1();

@@ -3,9 +3,8 @@ package com.example.reactor.service;
 import com.example.reactor.entity.Category;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * <p>CategoryService</p>
@@ -24,12 +23,11 @@ public class CategoryService {
 
     private final WebClient webClient = WebClient.create(BACKENDS_BASE_URL);
 
-    public Mono<List<Category>> findAll() {
+    public Flux<Category> findAll() {
         return webClient.get()
                 .uri("/categories")
                 .retrieve()
-                .bodyToFlux(Category.class)
-                .collectList();
+                .bodyToFlux(Category.class);
     }
 
     public Mono<Category> read(String categoryId) {

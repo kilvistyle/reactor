@@ -4,9 +4,8 @@ import com.example.reactor.entity.Header;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * <p>HeaderService</p>
@@ -55,27 +54,24 @@ public class HeaderService {
                 .bodyToMono(Integer.class);
     }
 
-    public Mono<List<Header>> findRecently() {
+    public Flux<Header> findRecently() {
         return webClient.get()
                 .uri("/headers/find?recently=10")
                 .retrieve()
-                .bodyToFlux(Header.class)
-                .collectList();
+                .bodyToFlux(Header.class);
     }
 
-    public Mono<List<Header>> findByCategoryId(String categoryId) {
+    public Flux<Header> findByCategoryId(String categoryId) {
         return webClient.get()
                 .uri(String.format("/headers/find?categoryId=%s", categoryId))
                 .retrieve()
-                .bodyToFlux(Header.class)
-                .collectList();
+                .bodyToFlux(Header.class);
     }
 
-    public Mono<List<Header>> findByUserId(String userId) {
+    public Flux<Header> findByUserId(String userId) {
         return webClient.get()
                 .uri(String.format("/headers/find?userId=%s", userId))
                 .retrieve()
-                .bodyToFlux(Header.class)
-                .collectList();
+                .bodyToFlux(Header.class);
     }
 }

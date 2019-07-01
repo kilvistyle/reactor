@@ -3,10 +3,9 @@ package com.example.reactor.service;
 import com.example.reactor.entity.Comment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * <p>CommentService</p>
@@ -25,12 +24,11 @@ public class CommentService {
 
     private final WebClient webClient = WebClient.create(BACKENDS_BASE_URL);
 
-    public Mono<List<Comment>> findByEntryId(@NotNull Long entryId) {
+    public Flux<Comment> findByEntryId(@NotNull Long entryId) {
         return webClient.get()
                 .uri("/comments/{entryId}", entryId)
                 .retrieve()
-                .bodyToFlux(Comment.class)
-                .collectList();
+                .bodyToFlux(Comment.class);
     }
 
 }
