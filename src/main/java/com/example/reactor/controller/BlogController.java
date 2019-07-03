@@ -1,13 +1,11 @@
 package com.example.reactor.controller;
 
 import com.example.reactor.entity.*;
-import com.example.reactor.exception.AppException;
 import com.example.reactor.resource.Entry;
 import com.example.reactor.resource.HeadersWithCategory;
 import com.example.reactor.resource.HeadersByUser;
 import com.example.reactor.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,23 +46,7 @@ public class BlogController {
                         .map(headers -> HeadersByUser.builder()
                                 .user(user)
                                 .headers(headers)
-                                .build()))
-                .log("headers/find-by-user");
-//
-//        return userService.read(userId)
-//                .flatMap(user -> {
-//                    if (User.UserState.VALID.equals(user.getUserState())) {
-//                        return headerService.findByUserId(user.getUserId())
-//                                .map(headers -> HeadersByUser.builder()
-//                                        .user(user)
-//                                        .headers(headers)
-//                                        .build());
-//                    }
-//                    else {
-//                        throw new AppException("userId is invalid.", HttpStatus.BAD_REQUEST);
-//                    }
-//                })
-//                .log("headers/find-by-user");
+                                .build()));
     }
 
     @GetMapping("/headers/find-by-category/{categoryId}")
@@ -80,8 +62,7 @@ public class BlogController {
                             .category(category)
                             .headers(headers)
                             .build();
-                })
-                .log("headers/find-by-category");
+                });
     }
 
     @GetMapping("/entries/{entryId}")
@@ -100,26 +81,7 @@ public class BlogController {
                                     .comments(comments)
                                     .build();
                         })
-                )
-                .log(String.format("entries/%d", entryId));
-
-//        return headerService.read(entryId)
-//                .flatMap(header -> Mono.zip(
-//                        Mono.just(header),
-//                        bodyService.read(header.getEntryId()),
-//                        commentService.findByEntryId(header.getEntryId())
-//                        )
-//                )
-//                .map(tuple3 -> {
-//                    final Header header = tuple3.getT1();
-//                    final Body body = tuple3.getT2();
-//                    final List<Comment> comments = tuple3.getT3();
-//                    return Entry.builder()
-//                            .header(header)
-//                            .body(body)
-//                            .comments(comments)
-//                            .build();
-//                });
+                );
     }
 
 }
